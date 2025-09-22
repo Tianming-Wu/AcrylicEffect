@@ -1,3 +1,0 @@
-D:/Dev/Cpp/CMake/lib/AcrylicEffect.lib
-D:/Dev/Cpp/CMake/bin/AcrylicEffect.dll
-D:/Dev/Cpp/CMake/include/acrylicEffect.h
