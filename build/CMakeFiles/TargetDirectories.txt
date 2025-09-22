@@ -1,0 +1,4 @@
+D:/Dev/Cpp/AcrylicEffect/build/CMakeFiles/AcrylicEffect.dir
+D:/Dev/Cpp/AcrylicEffect/build/CMakeFiles/INSTALL.dir
+D:/Dev/Cpp/AcrylicEffect/build/CMakeFiles/ALL_BUILD.dir
+D:/Dev/Cpp/AcrylicEffect/build/CMakeFiles/ZERO_CHECK.dir
