@@ -1,14 +1,17 @@
 #pragma once
 #include <windows.h>
 
-// 启用 Acrylic 效果
-__declspec(dllimport) void EnableAcrylicEffect(HWND hwnd);
+#ifdef _MSC_VER
+#include <dwmapi.h>
+#else
+constexpr auto DWMWA_SYSTEMBACKDROP_TYPE = 38;
+typedef enum DWM_SYSTEMBACKDROP_TYPE {
+  DWMSBT_AUTO, // 0 由系统决定背景样式，默认不设置即为该值
+  DWMSBT_NONE, // 1 无背景样式，通常为白色背景或是对应主题色
+  DWMSBT_MAINWINDOW, // 2 云母(mica)：云母样式
+  DWMSBT_TRANSIENTWINDOW, // 3 亚克力(Acrylic)：亚克力
+  DWMSBT_TABBEDWINDOW // 4 特殊云母（MicaAlt）：特殊云母样式
+};
+#endif
 
-// 禁用 Acrylic 效果（恢复常规窗口）
-__declspec(dllimport) void DisableAcrylicEffect(HWND hwnd);
-
-// 启用 Blur（模糊）效果
-__declspec(dllimport) void EnableBlurEffect(HWND hwnd);
-
-// 禁用 Blur 效果（恢复常规窗口）
-__declspec(dllimport) void DisableBlurEffect(HWND hwnd);
+void __declspec(dllimport) SetAcrylicEffect(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE type);
