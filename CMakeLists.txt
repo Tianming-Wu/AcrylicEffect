@@ -5,11 +5,20 @@ project(AcrylicEffect
     VERSION 1.0.0
 )
 
+option(ARCYLIC_BUILD_TESTS "Build tests" OFF)
 
-add_library(AcrylicEffect SHARED src/acrylicEffect.cpp)
+add_library(AcrylicEffect SHARED
+    include/acrylicEffect.h src/acrylicEffect.cpp
+)
 
+target_include_directories(AcrylicEffect PUBLIC "include/")
 target_link_libraries(AcrylicEffect PRIVATE dwmapi)
-target_include_directories(AcrylicEffect PUBLIC "include")
+
+if(ARCYLIC_BUILD_TESTS)
+    add_executable(acrylic_test test.cpp)
+    target_link_libraries(acrylic_test PRIVATE AcrylicEffect)
+endif()
+
 
 install(
     TARGETS AcrylicEffect
