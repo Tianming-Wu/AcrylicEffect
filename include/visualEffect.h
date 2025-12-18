@@ -1,5 +1,6 @@
 #pragma once
 #include <windows.h>
+#include <functional>
 
 #ifdef _MSC_VER
 #include <dwmapi.h>
@@ -42,7 +43,30 @@ public:
     inline HRGN handle() const { return hRgn; }
 };
 
-void __declspec(dllimport) SetAcrylicEffect(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE type);
+// More friendly names
+enum EffectType : int {
+    EffectType_Default = DWMSBT_AUTO,
+    EffectType_None = DWMSBT_NONE,
+    EffectType_Mica = DWMSBT_MAINWINDOW,
+    EffectType_Acrylic = DWMSBT_TRANSIENTWINDOW,
+    EffectType_MicaAlt = DWMSBT_TABBEDWINDOW
+};
+
+enum CornerPreference : int {
+    Corner_Default = DWMWCP_DEFAULT,
+    Corner_NoRound = DWMWCP_DONOTROUND,
+    Corner_Round = DWMWCP_ROUND,
+    Corner_RoundSmall = DWMWCP_ROUNDSMALL
+};
+
+
+// void __declspec(dllimport) SetAcrylicEffect(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE type); // Older version, but the newer one is already compatible
+bool __declspec(dllimport) SetAcrylicEffect(HWND hwnd, EffectType type = EffectType_Mica, CornerPreference corner = Corner_Round);
+
+// Older visual effect versions
 bool __declspec(dllimport) SetBlurEffect(HWND hwnd, Region region);
-HRESULT __declspec(dllimport) SetBlurEffectHr(HWND hwnd, Region region);
-bool __declspec(dllimport) SetMicaEffect(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE type = DWMSBT_MAINWINDOW, DWM_WINDOW_CORNER_PREFERENCE corner = DWMWCP_ROUND);
+
+// Power mode / effect mode management
+// Callback: bool param indicates current power saving mode (true = saving, false = normal)
+using BlurModeCallback = std::function<void(bool)>;
+void __declspec(dllimport) SetBlurModeChangeCallback(BlurModeCallback callback);

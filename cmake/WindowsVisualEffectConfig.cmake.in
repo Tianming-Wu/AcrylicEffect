@@ -1,0 +1,15 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find required dependencies
+# (None currently - dwmapi is system library on Windows)
+
+# Include the targets file
+include("${CMAKE_CURRENT_LIST_DIR}/WindowsVisualEffectTargets.cmake")
+
+check_required_components(WindowsVisualEffect)
+
+# Provide legacy variable for backward compatibility
+set(WindowsVisualEffect_LIBRARIES WindowsVisualEffect)
+set(WindowsVisualEffect_INCLUDE_DIRS "${PACKAGE_PREFIX_DIR}/include/WindowsVisualEffect")
