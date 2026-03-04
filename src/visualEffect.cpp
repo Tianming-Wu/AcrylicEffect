@@ -3,6 +3,7 @@
 #include <comdef.h>
 #include <mutex>
 #include <winuser.h>
+#include "visualEffect.h"
 
 HMODULE dwmapi = nullptr;
 
@@ -217,8 +218,23 @@ Region Region::createRounded(int left, int top, int right, int bottom, int radiu
     return region;
 }
 
-Region::Region(Region&& other) noexcept : hRgn(other.hRgn) {
-    other.hRgn = nullptr;
+Region Region::createRoundedScaled(int left, int top, int right, int bottom, int radius, double scalingFactor)
+{
+    Region region;
+    if(region.hRgn) {
+        DeleteObject(region.hRgn);
+        region.hRgn = nullptr;
+    }
+
+    #define _cScale(x) static_cast<int>((x) * (scalingFactor))
+
+    region.hRgn = CreateRoundRectRgn(_cScale(left), _cScale(top), _cScale(right), _cScale(bottom), _cScale(radius), _cScale(radius));
+    return region;
+}
+
+Region::Region(Region&& other) noexcept {
+    hRgn = other.hRgn;
+    other.hRgn = nullptr; // set the original one to null to avoid double deletion
 }
 
 Region& Region::operator=(Region&& other) noexcept {
@@ -230,6 +246,11 @@ Region& Region::operator=(Region&& other) noexcept {
         other.hRgn = nullptr;
     }
     return *this;
+}
+
+Region::Region(HRGN hRgn)
+{
+    this->hRgn = hRgn;
 }
 
 // Power mode monitoring implementation
