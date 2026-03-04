@@ -4,6 +4,9 @@ Project page: <a href="https://github.com/Tianming-Wu/WindowsVisualEffect" color
 
 A C++ library for applying modern Windows visual effects including Acrylic, Mica, and MicaAlt effects to your Windows applications.
 
+>[!NOTE]
+> You **should** check the notes at the bottom of this README first, or you might encounter some common issues when using the library.
+
 ## Features
 
 - **Acrylic Effect**: Semi-transparent acrylic background with blur
@@ -105,9 +108,12 @@ EffectType_MicaAlt  // Alternative Mica effect (Windows 11)
 // Window corner preferences
 Corner_Default      // System default
 Corner_NoRound      // No rounding
-Corner_Round        // Rounded corners
-Corner_RoundSmall   // Small rounded corners
+Corner_Round        // Rounded corners (8px)
+Corner_RoundSmall   // Small rounded corners (4px)
 ```
+
+>[!NOTE]
+>It is not possible to have rounded corners that is not **8px** or **4px**, as these values are determined by the system and cannot be customized.
 
 ### Monitor Power Mode Changes
 
@@ -128,7 +134,7 @@ SetBlurModeChangeCallback([](bool isPowerSaving) {
 
 ```cpp
 // Create rounded region
-Region region = Region::createRounded(0, 0, 800, 600, 10);
+Region region = Region::createRounded(0, 0, 800, 600, 10); // (x, y, width, height, corner radius)
 
 // Apply blur effect
 bool success = SetBlurEffect(hwnd, std::move(region));
@@ -158,6 +164,13 @@ public:
 2. **System Compatibility**: Mica and MicaAlt effects are only available on Windows 11 and will gracefully degrade on older systems.
 3. **Window Attributes**: When using visual effects, you typically need to set the window's transparent background attribute.
 4. **Debug Build**: In Debug mode, the library file is named `WindowsVisualEffectd.dll` (with a 'd' suffix).
+
+>[!IMPORTANT]
+>**About Transparency**: For a good visual effect, your window should have a transparent background. In Qt that is usually achieved by setting the `Qt::WA_TranslucentBackground` attribute.
+>
+>**BUT** notice that the above Qt method, or "Layered Window" method will regard fully-transparent areas as **"click-through"**, and mouse operations will pass though those areas, and also NOT considering them as part of the window, so hover events will be broken. 
+>
+> For a good fix, check this answer on [Qt Forum](https://forum.qt.io/topic/162168/how-to-round-the-corners-of-a-frameless-qwidget-when-also-applying-acrylic-effects/10).
 
 ## Version History
 
