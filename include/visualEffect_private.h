@@ -65,6 +65,7 @@ class __declspec(dllexport) Region {
     HRGN hRgn = nullptr;
 public:
     Region();
+    Region(HRGN hRgn);
     ~Region();
     
     // copy / move constructors & operators
@@ -75,6 +76,7 @@ public:
     Region& operator=(Region&& other) noexcept;
 
     [[nodiscard]] static Region createRounded(int left, int top, int right, int bottom, int radius);
+    [[nodiscard]] static Region createRoundedScaled(int left, int top, int right, int bottom, int radius, double scalingFactor);
     inline HRGN handle() const { return hRgn; }
 };
 

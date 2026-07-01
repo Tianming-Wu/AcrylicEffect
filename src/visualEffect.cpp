@@ -3,7 +3,7 @@
 #include <comdef.h>
 #include <mutex>
 #include <winuser.h>
-#include "visualEffect.h"
+// #include "visualEffect.h"
 
 HMODULE dwmapi = nullptr;
 
