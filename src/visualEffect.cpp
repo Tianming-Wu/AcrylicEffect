@@ -3,7 +3,7 @@
 #include <comdef.h>
 #include <mutex>
 #include <winuser.h>
-// #include "visualEffect.h"
+// #include "visualEffect.h"  -- see visualEffect_private.h for types
 
 HMODULE dwmapi = nullptr;
 
@@ -164,6 +164,39 @@ bool __declspec(dllexport) SetAcrylicEffect(HWND hwnd, EffectType type, CornerPr
     }
 
     return SUCCEEDED(hr1) && SUCCEEDED(hr2);
+}
+
+bool __declspec(dllexport) SetCompositionBlur(HWND hwnd, bool useAcrylic, DWORD gradientColor, CornerPreference corner)
+{
+    if (!hwnd) return false;
+
+    // ---- Set corner preference via DWM ----
+    if (corner != Corner_Default)
+    {
+        DWM_WINDOW_CORNER_PREFERENCE cp = static_cast<DWM_WINDOW_CORNER_PREFERENCE>(corner);
+        DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &cp, sizeof(cp));
+    }
+
+    // ---- Set blur via SetWindowCompositionAttribute ----
+    static HMODULE hUser = LoadLibraryW(L"user32.dll");
+    if (!hUser) return false;
+
+    static const auto fnSetWca = reinterpret_cast<pSetWindowCompositionAttribute>(
+        GetProcAddress(hUser, "SetWindowCompositionAttribute"));
+    if (!fnSetWca) return false;
+
+    ACCENT_POLICY policy{};
+    policy.AccentState = useAcrylic ? ACCENT_ENABLE_ACRYLICBLURBEHIND : ACCENT_ENABLE_BLURBEHIND;
+    policy.AccentFlags = 0;
+    policy.GradientColor = gradientColor;
+    policy.AnimationId = 0;
+
+    WINDOWCOMPOSITIONATTRIBDATA data{};
+    data.Attrib = WCA_ACCENT_POLICY;
+    data.pvData = &policy;
+    data.cbData = sizeof(policy);
+
+    return fnSetWca(hwnd, &data) != FALSE;
 }
 
 bool __declspec(dllexport) SetBlurEffect(HWND hwnd, Region region)

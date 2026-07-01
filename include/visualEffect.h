@@ -67,6 +67,13 @@ bool __declspec(dllimport) SetAcrylicEffect(HWND hwnd, EffectType type = EffectT
 // Older visual effect versions
 bool __declspec(dllimport) SetBlurEffect(HWND hwnd, Region region);
 
+// Composition blur (SetWindowCompositionAttribute path)
+// Works best with WS_EX_LAYERED + LWA_COLORKEY for transparent backgrounds.
+// gradientColor: ARGB tint overlay color. Default 0xCCFFFFFF (semi-transparent white).
+//   Use 0 for no tint, or customize e.g. 0xCCEEEEEE for a slightly gray tint.
+// corner: window corner preference (via DwmSetWindowAttribute). Default Corner_Round.
+bool __declspec(dllimport) SetCompositionBlur(HWND hwnd, bool useAcrylic = false, DWORD gradientColor = 0xCCFFFFFF, CornerPreference corner = Corner_Round);
+
 // Power mode / effect mode management
 // Callback: bool param indicates current power saving mode (true = saving, false = normal)
 using BlurModeCallback = std::function<void(bool)>;
