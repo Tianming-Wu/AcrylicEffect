@@ -9,7 +9,7 @@ project(WindowsVisualEffect
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-option(WINDOWS_VISUAL_EFFECT_BUILD_TESTS "Build tests" OFF)
+option(WVE_BUILD_TESTS "Build tests" OFF)
 
 # Library target
 add_library(WindowsVisualEffect SHARED
@@ -38,10 +38,12 @@ target_link_libraries(WindowsVisualEffect PRIVATE dwmapi)
 target_compile_features(WindowsVisualEffect PUBLIC cxx_std_17)
 
 # Tests
-if(WINDOWS_VISUAL_EFFECT_BUILD_TESTS)
-    add_executable(visual_effect_test test.cpp)
-    target_link_libraries(visual_effect_test PRIVATE WindowsVisualEffect)
-    set_target_properties(visual_effect_test PROPERTIES
+if(WVE_BUILD_TESTS)
+    add_executable(wve_test
+        test.cpp
+    )
+    target_link_libraries(wve_test PRIVATE WindowsVisualEffect)
+    set_target_properties(wve_test PROPERTIES
         DEBUG_POSTFIX "d"
     )
 endif()
